@@ -1,0 +1,161 @@
+So they shifted the entry point on us again today, so I expect people will be walking in late. How do you get in that way, actually? Oh, I just, you know how the walkway first blocks? Yeah. You just go around, and there's a little staircase that goes down beneath on the left side, and then it's just a train.
+
+So if you go on the left side of that left-hand building, then you get down that way. Yeah, you just go left, and then you just go around on the left-hand. I think there's going to be more traffic that way now that we've learned that.
+
+OK. So let's do our best, because we know people are going to be filtering in with that staircase problem. Convexity, optimization, yeah, this is the basis of machine learning.
+
+So I want to get people to quiet down, though, because it's hard enough to deal with people walking in late. Let's minimize the noise inside the room, please. Before we get to convexity and optimization, I need to finish up what I didn't do the last time with similarity.
+
+We were talking about the idea of one-hot encoding. Please? Thanks. So we were talking about the idea of one-hot encoding.
+
+If there's categorical data, and the categorical data is not inherently ordinal, so what's inherently ordinal? Anybody ever filled out a survey which is like, do you strongly agree, or agree, or neutral, disagree, strongly disagree? That's categorical, but it's ordinal, OK? Because strongly agree is greater than agree. So that's called a Likert scale, a 1 to 5 situation. And for a Likert scale survey response, strongly agree to strongly disagree, you don't need to one-hot encode that.
+
+You can just replace that Likert scale thing with a 1 to 5, because there's an inherent order to the categories, OK? So ordinal data, you can ignore this. But if your categories are something like red, green, blue, yellow, there's no inherent way in which red is greater than blue, OK? They're just different categories. So anything which is inherently non-ordinal needs to be encoded in a one-hot encoding, because one-hot encodings induce orthogonality.
+
+Red and blue don't have any similarity to each other without inducing ordinality, OK? That's the key. OK, so if in doubt, generally speaking, one-hot encoding is the right idea. It's not going to hurt anything if you take an ordinal data like a Likert scale and you one-hot it.
+
+The only thing that it really hurts is that it makes your data wider, right? You get more columns in your data set than you really need. If in doubt, one-hot. OK, so we've talked about dot product as a measure of similarity.
+
+But the dot product is intimately related to another way to measure similarity. That's the cosine similarity. Cosine similarity has got a dot product there in the, I should want to use that, right? It's got a dot product on the numerator.
+
+And then it's normalized by the magnitude of the vectors. That's actually the cosine of the angle between the two vectors, OK? So the cosine similarity is different than the dot product. It only cares about direction because it's normalized by the magnitude of the vectors.
+
+So only a vector's direction matters for a cosine similarity. So these two vectors in cosine similarity are exactly identical. I'm going to try to figure out how to do this to these two vectors, OK? The change in length doesn't change the cosine similarity.
+
+Got it? Only direction matters, not distance. So which one's right for you? Well, it depends on what your task is, right? Depends on what the representation of the data is and what makes sense. There are definitely machine learning problems where looking at the similarity between two data points, it makes way more sense to use direction, to use a dot product, OK? Because changes in the vector's magnitude matter in that problem.
+
+So I don't know. Like, it's a good example. If we're talking about patient data again, if the blood pressure and the weight of the patient double, it probably changes their health outcomes, right? It's not just the direction, the relative how much bigger blood pressure is than somebody's weight, OK? It's not just that.
+
+It's probably the actual magnitudes that matter here. Whereas if we're talking about what's a place where the relationship between data features matters more than their magnitudes? So gene expression, something I work with from time to time. So sometimes the thing that's diagnostic is not the absolute level of gene RNA that's floating around in the system.
+
+It's the relative levels. So when gene A is expressing twice as much as gene B, that indicates one thing is going on. But the thing is that the measurements of gene expression are kind of wonky.
+
+If we made the same measurement on the same cells next week, the raw numbers might change, but their relative relationships wouldn't, OK? OK? So that's a case where cosine, where direction, might be a better choice to measure similarity. It's kind of you got to know your problem and what's going on. OK.
+
+So looking at the math, remembering what a cosine is, pop quiz. If there's a cosine similarity of 0, are the vectors the most, the least similar? I'm going to tell you uncertainty is not in there. That's a decoy.
+
+What do we think? Say it. Sorry, did somebody say it? 0 is cosine of 0. Does it happen when vectors are parallel or when they're orthogonal? When they're orthogonal. That's the least similar.
+
+Actually, sorry, I apologize. Not orthogonal. Isn't 1 is when they're 180 away from each other? Shit.
+
+Even I don't know. Is it orthogonal? OK. All right.
+
+Yeah, so at any rate, that would make sense. The least similar is when they're 0. The most similar, because it's a cosine, when they're parallel, it's going to be 1. OK, so yeah. Does that refer to the absolute value of cosine? What if they were both negative? Yeah, it would be negative, correct.
+
+Yeah, so that would be negative 1. OK, so feature representation. We can revisit our one-hot encoded animals. And we can, in the past, we were doing dot product.
+
+What if we do cosine similarity? In cosine similarity, magnitude doesn't play any role. It's just the direction. So in cosine similarity, if we have Sparrow-bat difference being roughly the same as the chipmunk-bat difference.
+
+But once again, Sparrow and chipmunk are the most different from each other, just like before. OK. OK, this is where I regret not getting this far last time, because I know there was a lecture quiz question on this.
+
+Did people have problems with this idea on the lecture quiz, the last problem? So feature scaling is going to affect both dot product and cosine similarity measurements. If we take one vector element, just one of the features, and we multiply it by a large number, what are we effectively doing? So just imagine that our vector space for the animals is in 2D. It's not.
+
+It's in higher dimensionality. But if this is our chipmunk vector, and this is our bat vector like this, and they're similar, but not that similar, right? Well, if I make one of the vectors a couple of orders of magnitude bigger, I stretch out the part of the vector that is related to the weights by going from what had been in kilograms to gram representation, so 1,000 times bigger. I'm stretching out one of these dimensions, right? So what had been, say, if we just assume that this direction in the vector space is weight, what happens when we stretch out the magnitude by that direction by three orders of magnitude? Well, we get the same x component in chipmunk and bat, but we're stretching the crap out of the y component.
+
+So this vector now becomes like that. And the bat vector now becomes like that, so high I can't even draw my arrows, right? So the angle between them is now not so different, right? And dot products even more so, because dot products are firmly just directly connected to the magnitude of the vectors. So if you stretch one direction, you remove the influence of all the other directions in the vector.
+
+You make them less influential. So this is a very typical machine learning problem. You've got a bunch of variables.
+
+One of those variables on a housing data set is number of bedrooms. It's going to be a number less than 10, right? One of the variables is the housing price in dollars. San Diego County, that's going to be in millions.
+
+Guess which one of those two variables overrides the other? OK? Big variables have undue influence over small variables. So we very, very typically try to normalize each variable. It depends on the algorithm.
+
+Some algorithms don't work like this. To give you an example, decision trees, which we will talk about later in the quarter, they don't care. When they're dealing with housing price, they don't even look at number of bedrooms, OK? So there's no comparison between them.
+
+You don't have to normalize for a decision tree. But algorithms that work through linear algebra, like support vector machines, linear regressions, the stuff that we'll talk about, when you have one feature which is a million bigger than another feature, you always normalize each feature. So what we're going to do is we're going to normalize chipmunk bat and sparrow's weight.
+
+We're going to replace this with, I don't know, like a number between 0 and 1, where 1 is the biggest weight that's in the data set and 0 is the smallest. Or maybe we z-score it, right? So we z-score the entire column and replace the column with the z-scored version of that data. For those of you that don't remember what a z-score is, it's replacing the number with how many standard deviations away from the mean of the data are you? OK? Make sense? Then everybody, every feature is on the same rough size scale.
+
+And each feature can be equally influential in the answer. Questions? OK. So relative scaling is important.
+
+We usually normalize to get rid of the influence of that, especially if it's a linear algebra kind of algorithm. So we've got two ways to measure similarity. Dot product cares inherently about vector length as well as direction.
+
+Cosine similarity cares only about that direction. They've got different min and max values, but their mins are always 0. Both methods are changed by scaling. Dot product's more sensitive than cosine, but cosine can be overwhelmed by scaling as well.
+
+And you probably want to use one-hot in any kind of vector situation that's non-ordinal categorical. That's all I got to say about representation and similarity. Anybody got any questions on that stuff? OK.
+
+Actually, briefly, let... I'm trying to think about my timing in here. Let me just say this. OK? I'm not going to actually do the class exercise that I had prepared, but I want you to note that I had prepared... Oh, F. I had prepared an exercise for yesterday, but we were just way too slow.
+
+And if it will allow me to actually connect to the Internet... No, it won't. This is lovely. Yay! So there's a notebooks repo here, cogs118.
+
+You can see that there's some in-class exercises that we might do if I'm not so damn slow on the lecturing. You should definitely, if you haven't already, play with the vector similarity notebook just because it gives you an opportunity to both do some numpy and form vectors and actually play with scaling yourself. So there's a little fill in the blanks kind of thing.
+
+And you can just explore and learn to use numpy if you haven't already learned to use numpy. All right. But in the meantime, let's boogie.
+
+So machine learning is really just picking an appropriate model and optimizing some function. So when we talk about optimization, you will see people say things like loss function, cost function, objective function, fitness function. We all mean the same thing.
+
+It's some function we're trying to optimize. Different people just use different jargon. So what does that look like? What is optimization? The idea is that we have some loss, we tend to use the word loss in machine learning, that we're trying to minimize.
+
+Where you can think of loss as just how bad are our mistakes, right? We're trying to predict the right answers to the label training data. So we make some predictions. Those predictions, right, if you followed from our pre-lecture, those predictions are just running our model forward.
+
+That's this term. The truth, the actual results we should have gotten, are why. So the difference between them is just going to be a vector that has how bad our predictions were.
+
+For every data point in the vector, how bad were our predictions? If this vector is largely close to zeros, then we're doing great. And if it's far away from that, we're doing poorly. Somebody had on CampusWire called me out on my bad notation in the pre-video.
+
+Thank you very much for doing that. The thing is that it's not just this raw difference, because of course that's a vector. That vector goes through some kind of function, and it produces a loss surface.
+
+So this is a scalar number that comes out. So that scalar number might be something like the average across these vector differences, or it might be the sum of those differences. So for things like ordinary least squares regression, it's a sum.
+
+It's the sum of squared errors. That's what OLS regression does. So the vertical here represents how bad we're doing.
+
+The higher the surface, the worse it is. Down here where the surface touches zero, that's perfect. And the surface is defined in terms of the weight vector.
+
+So when we change the weights of the parameters, if we're over here for our weights, really big w0, really small w1, we're doing terribly. And when our weight values are over here, kind of a middle zone for both w0 and w1, we're doing great. And then we're doing terribly again over here.
+
+Got that? So the vertical is how bad we're doing. That's the loss. For those of you that... Wait, how many people here can read a topo map when you go hiking? Not as many as I could hope for.
+
+So this is a topo map. These curves here, they're lines of equal height. So if you imagine this is the mountaintop or the bottom of the valley, either way, all you know from this view, which is literally like a top-down of this, it's a top-down of this, where this circle here around the top of the surface is this circle.
+
+And this circle here in the middle is that circle. So when you're moving across lines, the closer together the lines, the steeper the slope. And the further apart the lines, the shallower the slope.
+
+That's how you read a topo map when you're going hiking. And that's what this is. This is a topo 2D representation of this.
+
+So the way we actually do things in optimization is that we know we want this to be smaller. So what we want to do is we want to roll down this hill. We want to roll from wherever we're at in the direction of lower, towards the minimum.
+
+So if we're starting off at some w0, how do we know how to go downhill? Well, this is a surface. And the surface has a tangent line that's the derivative, right? Every function you've got, its derivative is the tangent line. Well, in vector world, when we're doing derivatives of vectors, this is the derivative of our vector with respect to w, this gradient.
+
+And it is, by definition, the gradient points uphill. So if we wish to go downhill, what we need to do is move in the negative direction of the gradient. So instead, I'm going to use a blue arrow.
+
+We're going to go that way. Okay? We're going to take a little step towards lower. And then we'll recalculate the gradient and take another little step in that direction.
+
+And so on and so forth until we are happy with our answer. Okay? Yeah? You're a couple of slides early, but we will talk about that. All right.
+
+So my slides' transitions are bothering me. Now we've got to introduce some optimization math notation, right? Because how do we know we hit the minimum? Well, we need a notation to describe that. So if we have an optimization problem, we need to define, we're used to the idea of max, right? So the maximum net worth of any person on the planet is something like $181 billion.
+
+But who is that person? That is the notation argmax. The argmax of net worth is the parameter choice that maximizes. Okay? So the maximum value is $181 billion.
+
+But the choice of person who maximizes the net worth function, that's Jeff Bezos. Optimization problems, what we're interested in is argmax. We want to know what parameter choice gave us the maximum.
+
+Okay? That's our answer. That's the best answer. Make sense? So max is the value of the function, but we want to know what parameter choice gave us that max value.
+
+Okay. So my bad slide transitions are still bad. So likewise, argmax has its best friend, argmin.
+
+Same deal. It's the parameter choice that minimizes a function. Because in machine learning, we almost always couch the problem as a minimization problem, this is the one we're going to use.
+
+What we're looking for is we're looking for the w that minimizes the function loss of w. All caught up? Okay, so if our loss function looks like some wiggly surface, what we're saying is, you know, I mean, if we only have one single parameter, one scalar w for our model, because it's a really lame model, you can just draw the loss surface like this in 2D. More generally, right? It isn't. More generally, w is a big vector.
+
+Okay? You can't really visualize that. We showed you a two vector, a vector two space weight, but, you know, obviously, most of your problems are going to be 100 variables, so your vector space is going to be hundreds, and then you add the loss as another direction. But the concept remains the same.
+
+What we're looking for is this point, w star. This w star is the lowest it can goest. Okay? That's the arg min, the w that returns the lowest value of loss.
+
+Now, every minimization problem can be flipped by a negative sign and turned into a maximization problem. So other fields that do optimization can sometimes be doing hill climbing instead of loss minimization. Same damn math, right? Literally just put a negative sign and change things from min to max.
+
+Okay? But same kind of answers. So, again, you can flip things around by adding a negative sign. You can make it a minimization problem by taking a maximization problem and putting a negative sign on the front of it.
+
+Okay. Generally speaking, we're super lazy, and we want to make our math as easy as we can make it. Now, the very easiest math in optimization is when problems are in a form which is called a convex function.
+
+We're going to talk more about that here, but let's just start by looking at tools we might use to make our math easier. So one of every machine learning neophyte's least favorite things is when we talk about monotonic functions. Monotonic functions, what are they? Anybody happen to know a good definition before I flip over to one? Ever heard of a monotonic function? Yeah? No? Good guess, but not it? Yeah? Always increasing.
+
+Always be increasing, yo. That is a monotonically increasing function or a monotonically decreasing function. So the graph here is a big clue.
+
+A linear function is monotonic. As you go from left to right, this positive sloped linear function is always increasing, right? So if it was a negative sloped function, it would be monotonically decreasing. It never bends back on itself and does that.
+
+That's not monotonic. Okay, there are other kinds of monotonic functions out there. I don't know why my slide transitions suck.
+
+Okay, I mean, loads of them. Exponentials are another class. They're always increasing.
+
+It's just that they really blow up fast. Natural logs, also always increasing, but they're asymptotically approaching some value, right? Even though it looks like it's getting flat, a natural log is not ever reaching true flatness. It's always very, very, very slowly increasing as we go to infinity.
+
+Okay, these are all monotonic functions. Now, why am I telling you about these things? Well, it turns out monotonic functions are a useful tool for transformation. So when we do optimization problems, we can transform them into a better form.
+
+The transcript prematurely ends here.
