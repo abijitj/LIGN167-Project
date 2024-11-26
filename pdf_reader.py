@@ -11,4 +11,4 @@ if transcript is not None:
     for page in reader.pages:
         pdf_text += page.extract_text()
 
-    st.text_area("Transcript:", pdf_text, height =400)
+    st.text_area("Transcript:", pdf_text, height=400)
