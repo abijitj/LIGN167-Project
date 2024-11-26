@@ -1,2 +1,5 @@
 openai
 dotenv
+streamlit 
+PyPDF2
+reportlab
