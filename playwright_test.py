@@ -20,13 +20,12 @@ def login_to_website():
         # Get the username from the environment variable
         username = os.getenv('CANVAS_USERNAME')
         password = os.getenv('CANVAS_PASSWORD')
-        print(username, password)
         # Fill in the username textbox
         page.fill('input[type="username"]', username)
         page.fill('input[type="password"]', password)
         # Click the submit button
         page.click('button[type="submit"]')
-        
+
         # page.wait_for_timeout(timeout=10000)
         # page.wait_for_selector() # apparently this function is discouraged: https://playwright.dev/python/docs/api/class-page
         # page.wait_for_url('https://canvas.ucsd.edu/courses/59004/external_tools/5826)')
