@@ -26,23 +26,9 @@ def login_to_website():
         # Click the submit button
         page.click('button[type="submit"]')
 
-        # page.wait_for_timeout(timeout=10000)
-        # page.wait_for_selector() # apparently this function is discouraged: https://playwright.dev/python/docs/api/class-page
-        # page.wait_for_url('https://canvas.ucsd.edu/courses/59004/external_tools/5826)')
-
         page.wait_for_selector('h1#header-text:has-text("Check for a Duo Push")', timeout=15000)  # Wait for Duo Push prompt
 
-        start_time = time.time()
-        while time.time() - start_time < 30:  # Timeout after 30 seconds
-            current_title = page.title()
-            print("hello")
-            if current_title == "Media Gallery":
-                print("Title is 'Media Gallery'")
-                break
-            time.sleep(1)  # Check every second
-
-        if time.time() - start_time >= 30:
-            print("Timeout: Title was not 'Media Gallery' within 30 seconds.")
+        page.wait_for_url('https://canvas.ucsd.edu/courses/59004/external_tools/5826')
         
         print("Login successful!")
 
