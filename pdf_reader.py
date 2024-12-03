@@ -2,7 +2,35 @@ import streamlit as st
 from PyPDF2 import PdfReader
 from reportlab.pdfgen import canvas
 from io import BytesIO
+from chatgpt import *
 
+def get_processed_text(transcript_text: str, max_tries=4) -> str:
+    current_try = 0
+    while current_try < max_tries:
+        try:
+            summary = get_summary(transcript_text)
+            stamped_topics = get_stamped_topics(transcript_text)
+            bullet_points = []
+
+            # Generate bullet points for each topic
+            import concurrent.futures
+
+            def process_topic(topic):
+                return (topic[0], get_bullet_points(topic[0], topic[3]))
+
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                bullet_points = list(executor.map(process_topic, stamped_topics))
+
+            # Put the summary and bullet points together into processed text
+            processed_text = f'Lecture Summary:\n{summary}\n\nLecture Notes:'
+            for topic, points in bullet_points:
+                processed_text += f"\n{topic}:\n"
+                processed_text += points + "\n"
+            return processed_text
+        except Exception as e:
+            current_try += 1
+            st.warning(f"Error processing transcript: {e}. Retrying ({current_try}/{max_tries})...")
+    return "Error processing transcript. Please try again."
 st.title("Note Creator")
 
 # Option to upload a file or paste text
@@ -36,14 +64,10 @@ elif option == "Paste text":
 # Process the transcript
 if st.button("Create Notes"):
     if transcript_text.strip():  # Check if the transcript text is not empty
-        st.write("Processing the transcript...")
 
-        # Example: Word count
-        word_count = len(transcript_text.split())
-        st.write(f"Word count: {word_count}")
-
-        # Example of processing logic (you can replace this with your actual processing)
-        processed_text = f"Notes:\n\n{transcript_text.upper()}"
+        # Process the transcript text
+        with st.spinner('Processing transcript'):
+            processed_text = get_processed_text(transcript_text)
 
         # Display the processed text
         st.text_area("Notes:", processed_text, height=400)
