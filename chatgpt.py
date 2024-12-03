@@ -35,9 +35,6 @@ def get_chatgpt_response(prompt: str)->Optional[str]:
     # Print the response from the ChatGPT API
     return response.choices[0].message.content
 
-with open('raw_transcript.txt', 'r') as file:
-    transcript_text = file.read()
-print(len(transcript_text), len(transcript_text.split(' ')))
 
 def get_summary(transcript_text: str)-> str:
     summary_prompt = f"""You are a text summarizer that takes in college lectures and summarizes them.
@@ -148,7 +145,6 @@ Make sure to follow the format from the previous example.
         #print(topic_stamp)
         processed_topic_stamp = topic_stamp[topic_stamp.find('-') + 1:].strip().split('|')
         topic = processed_topic_stamp[0].strip()
-        print(processed_topic_stamp)
         start_number = processed_topic_stamp[1].strip()
         end_number = processed_topic_stamp[2].strip()
         full_topics.append([topic, start_number, end_number])
@@ -176,16 +172,18 @@ Here is an example of what you should output:
 - Bullet point 2 here
 
 Your output should only be the bullet points in the given format, nothing else."""
-    print(topic)
+
     bullets = get_chatgpt_response(bullet_points_prompt + f"\nTopic: {topic}\nContent: {content}")
-    print(bullets)
-    print('\n')
     return bullets
 
-print(get_summary(transcript_text))
-stamped_topics = get_stamped_topics(transcript_text)
-bullet_points = []
-for topic in stamped_topics:
-    bullet_points.append((topic[0], get_bullet_points(topic[0], topic[3])))
+# with open('raw_transcript.txt', 'r') as file:
+#     transcript_text = file.read()
+# print(len(transcript_text), len(transcript_text.split(' ')))
 
-print(bullet_points)
+# print(get_summary(transcript_text))
+# stamped_topics = get_stamped_topics(transcript_text)
+# bullet_points = []
+# for topic in stamped_topics:
+#     bullet_points.append((topic[0], get_bullet_points(topic[0], topic[3])))
+
+# print(bullet_points)
