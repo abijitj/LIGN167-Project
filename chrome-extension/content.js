@@ -100,7 +100,7 @@ function createTimeDisplay() {
   timeDisplay.style.borderRadius = "5px";
   timeDisplay.style.fontSize = "18px";
   timeDisplay.style.zIndex = "10000"; // High z-index to stay above other elements
-  timeDisplay.textContent = "Video time: 00:00";
+  timeDisplay.textContent = "Processing transcript...";
 
   // Append it as the first element of the body
   document.body.insertBefore(timeDisplay, document.body.firstChild);
