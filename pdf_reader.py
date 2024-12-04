@@ -16,7 +16,7 @@ def get_processed_text(transcript_text: str, max_tries=4) -> str:
             import concurrent.futures
 
             def process_topic(topic):
-                return (topic[0], get_bullet_points(topic[0], topic[3]))
+                return (topic[0], get_bullet_points(topic[0], topic[5]))
 
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 bullet_points = list(executor.map(process_topic, stamped_topics))

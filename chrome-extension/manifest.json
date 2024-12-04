@@ -1,0 +1,17 @@
+{
+    "manifest_version": 3,
+    "name": "Video Time Display",
+    "version": "1.0",
+    "description": "Displays the current time of a video player elsewhere on the page.",
+    "permissions": [],
+    "host_permissions": ["*://*/*"],
+    "content_scripts": [
+      {
+        "matches": ["*://*/*"],
+        "js": ["content.js"],
+        "css": ["styles.css"],
+        "all_frames": true
+      }
+    ]
+  }
+  

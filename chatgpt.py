@@ -48,7 +48,6 @@ Lecture Transcript:
 {transcript_text}
 """
     return get_chatgpt_response(summary_prompt)
-
 def get_stamped_topics(transcript_text: str)->List[List[str|int]]:
     list_of_topics_prompt = f"""You are a text summarizer that takes in college lecture transcripts and creates topic lists from them.
 You will create a list of topics in this format:
@@ -104,10 +103,13 @@ Here's an example: "{number_stamp_example_2}".
 Your task is to organize the transcript into sections based on the topics by determining the start and end of each topic based on number stamps.
 The topics in the transcript will be in the same order as the topic list.
 
-You will output the list of topics with the corresponding number of the number stamp that starts closest to the beginning of the topic but is before the beginning of the timestamp as well as the
-closest timestamp after it that follows the end of the topic.
+You will output the list of topics with the corresponding number of the number stamp that starts closest to the beginning of the topic but is before the beginning of the numberstamp as well as the
+closest numberstamp after it that follows the end of the topic.
 
-If the end of a topic is the very end of the transcript put -1. This should only happen for the last topic. This may not always happen for the last topic if it is clearly
+Finally, you will include the starting and end timestamp of each topic in the transcript, these are different from the number stamps. The timestamps should be in the format hh:mm:ss. The timestamps should line up directly,
+the next starting timestamp should be the same as the preceding start timestamp.
+
+If the end of a topic is the very end of the transcript put -1 for the numberstamp, do not put -1 for the timestamp. This should only happen for the last topic. This may not always happen for the last topic if it is clearly
 concluded in the transcript.
 
 Here's an example where you're given a full transcript and this list of topics:
@@ -117,12 +119,12 @@ Here's an example where you're given a full transcript and this list of topics:
 - Mitigation Strategies
 - Policy and Regulation
 
-Your output is the list of topics with the corresponding number stamps:
-- Causes of Climate Change | 1 | 15
-- Impact on Ecosystems | 18 | 45
-- Human Health Effects | 42 | 67
-- Mitigation Strategies | 123 | 150
-- Policy and Regulation | 145 | -1
+Your output is the list of topics with the corresponding numberstamps and timestamps:
+- Causes of Climate Change | 1 | 15 | 00:00:03| 00:04:22
+- Impact on Ecosystems | 18 | 45 | | 00:04:22 | 00:12:45
+- Human Health Effects | 42 | 67 | | 00:12:45 | 00:21:20
+- Mitigation Strategies | 123 | 150 | | 00:21:20 | 00:34:11
+- Policy and Regulation | 145 | -1 | | 00:34:11 | 01:05:22
 
 Your output should only be the list of topics with the corresponding number stamp, nothing else.
 
@@ -140,6 +142,7 @@ Make sure to follow the format from the previous example.
     #print(numbered_text)
     #lecture_topics = get_chatgpt_response(list_of_topics_prompt)
     topic_stamps = get_chatgpt_response(topics_organizer_prompt)
+    print(topic_stamps)
     full_topics = [] # List of lists of the form [topic, start_number, end_number, topic content]
     for topic_stamp in topic_stamps.split('\n'):
         #print(topic_stamp)
@@ -147,7 +150,9 @@ Make sure to follow the format from the previous example.
         topic = processed_topic_stamp[0].strip()
         start_number = processed_topic_stamp[1].strip()
         end_number = processed_topic_stamp[2].strip()
-        full_topics.append([topic, start_number, end_number])
+        start_time = processed_topic_stamp[3].strip()
+        end_time = processed_topic_stamp[4].strip()
+        full_topics.append([topic, start_number, end_number, start_time, end_time])
 
 
     for i in range(len(full_topics)):
@@ -176,12 +181,25 @@ Your output should only be the bullet points in the given format, nothing else."
     bullets = get_chatgpt_response(bullet_points_prompt + f"\nTopic: {topic}\nContent: {content}")
     return bullets
 
+def get_full_stamped_topics(transcript_text: str)->List[List[str|int]]:
+    stamped_topics = get_stamped_topics(transcript_text)
+    full_stamped_topics = []
+    import concurrent.futures
+
+    def process_topic(topic):
+        return [topic[0], topic[1], topic[2], topic[3], topic[4], get_bullet_points(topic[0], topic[5])]
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        full_stamped_topics = list(executor.map(process_topic, stamped_topics))
+
+    return full_stamped_topics
 # with open('raw_transcript.txt', 'r') as file:
 #     transcript_text = file.read()
 # print(len(transcript_text), len(transcript_text.split(' ')))
 
-# print(get_summary(transcript_text))
+# # print(get_summary(transcript_text))
 # stamped_topics = get_stamped_topics(transcript_text)
+# print(stamped_topics)
 # bullet_points = []
 # for topic in stamped_topics:
 #     bullet_points.append((topic[0], get_bullet_points(topic[0], topic[3])))
