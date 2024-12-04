@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "Video Time Display",
+    "name": "Video Transcript Viewer",
     "version": "1.0",
-    "description": "Displays the current time of a video player elsewhere on the page.",
+    "description": "Displays the current transcript of a canvas video.",
     "permissions": [],
     "host_permissions": ["*://*/*"],
     "content_scripts": [
