@@ -1,0 +1,17 @@
+{
+    "manifest_version": 3,
+    "name": "Video Transcript Viewer",
+    "version": "1.0",
+    "description": "Displays the current transcript of a canvas video.",
+    "permissions": [],
+    "host_permissions": ["*://*/*"],
+    "content_scripts": [
+      {
+        "matches": ["*://*/*"],
+        "js": ["content.js"],
+        "css": ["styles.css"],
+        "all_frames": true
+      }
+    ]
+  }
+  

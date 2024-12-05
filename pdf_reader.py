@@ -3,6 +3,7 @@ from PyPDF2 import PdfReader
 from reportlab.pdfgen import canvas
 from io import BytesIO
 from chatgpt import *
+import textwrap
 
 def get_processed_text(transcript_text: str, max_tries=4) -> str:
     current_try = 0
@@ -16,7 +17,7 @@ def get_processed_text(transcript_text: str, max_tries=4) -> str:
             import concurrent.futures
 
             def process_topic(topic):
-                return (topic[0], get_bullet_points(topic[0], topic[3]))
+                return (topic[0], get_bullet_points(topic[0], topic[5]))
 
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 bullet_points = list(executor.map(process_topic, stamped_topics))
@@ -31,6 +32,11 @@ def get_processed_text(transcript_text: str, max_tries=4) -> str:
             current_try += 1
             st.warning(f"Error processing transcript: {e}. Retrying ({current_try}/{max_tries})...")
     return "Error processing transcript. Please try again."
+
+# Initialize session state for processed text
+if "processed_text" not in st.session_state:
+    st.session_state.processed_text = ""
+
 st.title("Note Creator")
 
 # Option to upload a file or paste text
@@ -64,38 +70,44 @@ elif option == "Paste text":
 # Process the transcript
 if st.button("Create Notes"):
     if transcript_text.strip():  # Check if the transcript text is not empty
-
         # Process the transcript text
         with st.spinner('Processing transcript'):
-            processed_text = get_processed_text(transcript_text)
-
-        # Display the processed text
-        st.text_area("Notes:", processed_text, height=400)
-
-        # Generate a PDF in memory
-        pdf_buffer = BytesIO()
-        pdf = canvas.Canvas(pdf_buffer)
-        pdf.setFont("Helvetica", 12)
-        text_lines = processed_text.split("\n")
-        y = 800  # Start writing at the top of the page
-        
-        for line in text_lines:
-            if y < 40:  # Check if we need a new page
-                pdf.showPage()
-                pdf.setFont("Helvetica", 12)
-                y = 800
-            pdf.drawString(40, y, line)
-            y -= 15
-        
-        pdf.save()
-        pdf_buffer.seek(0)
-
-        # Allow the user to download the PDF
-        st.download_button(
-            label="Download Notes as PDF",
-            data=pdf_buffer,
-            file_name="processed_transcript_notes.pdf",
-            mime="application/pdf",
-        )
+            st.session_state.processed_text = get_processed_text(transcript_text)
     else:
         st.warning("Please provide a transcript before processing.")
+
+# Display the processed text if available
+if st.session_state.processed_text:
+    st.text_area("Notes:", st.session_state.processed_text, height=400)
+
+    # Generate a PDF in memory
+    pdf_buffer = BytesIO()
+    pdf = canvas.Canvas(pdf_buffer)
+    pdf.setFont("Helvetica", 12)
+    text_lines = st.session_state.processed_text.split("\n")
+    y = 800  # Start writing at the top of the page
+    line_length = 100
+
+    processed_lines = []
+    for line in text_lines:
+        wrapped_lines = textwrap.wrap(line, width=line_length, break_long_words=False, break_on_hyphens=False)
+        processed_lines.extend(wrapped_lines)
+    
+    for line in processed_lines:
+        if y < 40:  # Check if we need a new page
+            pdf.showPage()
+            pdf.setFont("Helvetica", 12)
+            y = 800
+        pdf.drawString(40, y, line)
+        y -= 15
+    
+    pdf.save()
+    pdf_buffer.seek(0)
+
+    # Allow the user to download the PDF
+    st.download_button(
+        label="Download Notes as PDF",
+        data=pdf_buffer,
+        file_name="processed_transcript_notes.pdf",
+        mime="application/pdf",
+    )
