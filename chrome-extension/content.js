@@ -1,3 +1,5 @@
+// Created in part with ChatGPT
+
 console.log("Content script loaded!");
 function getTranscriptText() {
   // Find the element with the data-testid="transcript_list"

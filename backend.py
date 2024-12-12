@@ -1,3 +1,5 @@
+# Largely created with ChatGPT
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from chatgpt import get_full_stamped_topics

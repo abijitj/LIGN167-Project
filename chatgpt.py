@@ -1,3 +1,5 @@
+# Created using OpenAI docs
+
 import os
 from dotenv import load_dotenv
 import openai
